@@ -1,0 +1,23 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+X-WR-CALNAME:{{ name }}
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+CALSCALE:GREGORIAN
+{% for event in events %}
+BEGIN:VEVENT
+SUMMARY:{{ event.home|raw }} - {{ event.away|raw }}{% if event.score %} ({{ event.score }}){% endif %}
+
+DESCRIPTION:{{ event.description }}
+{% if event.allDay %}
+DTSTART;VALUE=DATE:{{ event.timeStart }}
+DTEND;VALUE=DATE:{{ event.timeEnd }}
+{% else %}
+DTSTART:{{ event.timeStart }}
+DTEND:{{ event.timeEnd }}
+{% endif %}
+UID:{{ event.id }}
+DTSTAMP:{{ event.timeStart }}
+LOCATION:{{ event.address }}
+END:VEVENT
+{% endfor %}
+END:VCALENDAR
