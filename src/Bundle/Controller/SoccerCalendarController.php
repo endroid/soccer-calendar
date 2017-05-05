@@ -17,13 +17,43 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Symfony\Component\DomCrawler\Crawler;
 
 class SoccerCalendarController extends Controller
 {
     /**
-     * @Route("/")
+     * @var array
+     */
+    protected $days = [
+        'Za' => 'sat',
+        'Zo' => 'Sun',
+        'Ma' => 'Mon',
+        'Di' => 'Tue',
+        'Wo' => 'Wed',
+        'Do' => 'Thu',
+        'Vr' => 'Fri'
+    ];
+
+    /**
+     * @var array
+     */
+    protected $months = [
+        'jan' => 'jan',
+        'feb' => 'feb',
+        'mrt' => 'mar',
+        'apr' => 'apr',
+        'mei' => 'may',
+        'jun' => 'jun',
+        'jul' => 'jul',
+        'aug' => 'aug',
+        'sep' => 'sep',
+        'okt' => 'oct',
+        'nov' => 'nov',
+        'dec' => 'dec'
+    ];
+
+    /**
+     * @Route("/", name="endroid_soccer_calendar_index")
      * @Template()
      */
     public function indexAction()
@@ -32,11 +62,11 @@ class SoccerCalendarController extends Controller
 
         $competitionUrls = [
             'Netherlands' => 'https://www.vi.nl/competities/nederland/eredivisie/2016-2017/stand',
-            'Spain' => 'http://www.vi.nl/competities/stand/primera-division-20162017-spanje.htm',
-            'England' => 'http://www.vi.nl/competities/stand/premier-league-20162017-engeland.htm',
-            'Germany' => 'http://www.vi.nl/competities/stand/bundesliga-20162017-duitsland.htm',
-            'France' => 'http://www.vi.nl/competities/stand/ligue-1-20162017-frankrijk.htm',
-            'Italy' => 'http://www.vi.nl/competities/stand/serie-a-20162017-italie.htm',
+            'Spain' => 'https://www.vi.nl/competities/spanje/primera-division/2016-2017/stand',
+            'England' => 'https://www.vi.nl/competities/engeland/premier-league/2016-2017/stand',
+            'Germany' => 'https://www.vi.nl/competities/duitsland/bundesliga/2016-2017/stand',
+            'France' => 'https://www.vi.nl/competities/frankrijk/ligue-1/2016-2017/stand',
+            'Italy' => 'https://www.vi.nl/competities/italie/serie-a/2016-2017/stand',
         ];
 
         foreach ($competitionUrls as $name => $url) {
@@ -70,7 +100,7 @@ class SoccerCalendarController extends Controller
             $teamName = $node->filter('.c-competition-overview__cell--hover')->text();
             $team = [
                 'name' => $teamName,
-                'url' => $this->generateUrl('endroid_play_calendar_team', ['name' => strtolower($teamName)]),
+                'url' => $this->generateUrl('endroid_soccer_calendar_team', ['name' => strtolower($teamName)]),
             ];
             $teams[] = $team;
         });
@@ -79,7 +109,8 @@ class SoccerCalendarController extends Controller
     }
 
     /**
-     * @Route("/{name}.ics", requirements={"name" = ".+"})
+     * @Route("/{name}.ics", requirements={"name" = ".+"}, name="endroid_soccer_calendar_team")
+     * @Template()
      */
     public function teamAction($name)
     {
@@ -87,74 +118,56 @@ class SoccerCalendarController extends Controller
 
         $url = 'https://www.vi.nl/teams/nederland/'.$name.'/wedstrijden';
 
+        $keys = array_combine(array_keys($this->days), array_keys($this->days)) + array_combine(array_keys($this->months), array_keys($this->months));
+        $values = $this->days + $this->months;
+
         $client = new Client();
         $client->followRedirects(false);
         $client->getCookieJar()->set(new Cookie('BCPermissionLevel', 'PERSONAL'));
 
         $crawler = $client->request('GET', $url);
-        $crawler->filter('.c-match-overview')->each(function (Crawler $overview) use (&$events) {
-            $overview->filter('.matchItemRow')->each(function (Crawler $match) use (&$events) {
-                $scoreHome = $match->filter('.c-fixture__team--home')->text();
-                $scoreAway = $match->filter('.c-fixture__team--away')->text();
-                $time = $match->filter('.c-fixture__status')->text();
-                $link = $match->filter('.c-match-overview__link')->attr('href');
-                $date = $match->filter('h3')->html();
-                if ($time == '') {
-                    $score = $scoreHome.' - '.$scoreAway;
-                    $time = '00:00';
-                }
+        $crawler->filter('.c-match-overview')->each(function (Crawler $match) use (&$events, $keys, $values) {
+            $teamHome = trim($match->filter('.c-fixture__team-name--home')->text());
+            $teamAway = trim($match->filter('.c-fixture__team-name--away')->text());
+            $scoreHome = intval($match->filter('.c-fixture__score--home')->text());
+            $scoreAway = intval($match->filter('.c-fixture__score--away')->text());
+            $time = trim($match->filter('.c-fixture__status')->text());
+            $link = $match->filter('.c-match-overview__link')->attr('href');
+            $date = str_replace($keys, $this->days + $this->months, $match->filter('h3')->html());
 
-                $allDay = $time == '';
-                $date = DateTime::createFromFormat('Y-d-m H:i', date('Y').'-'.$date.' '.$time, new DateTimeZone('Europe/Amsterdam'));
-                $now = new DateTime('now');
+            $score = '';
+            $allDay = false;
+            if (!preg_match('#[0-9]{2}:[0-9]{2}#', $time)) {
+                $allDay = true;
+                $time = '00:00';
+                $score = $scoreHome.' - '.$scoreAway;
+            }
 
-                /*
-                 * Possible variations
-                 *
-                 * A. Time 20:45 (item is always in future)
-                 * B. Score 1 - 2 (item is always in past or today)
-                 */
+            $date = DateTime::createFromFormat('D j M H:i', $date.' '.$time);
 
-                if ($score == '') {
-                    // In future: either this year or next year
-                    if ($date->format('Ymd') < $now->format('Ymd')) {
-                        $date->add(new DateInterval('P1Y'));
-                    }
-                } else {
-                    // In past: either this year or previous year
-                    // Will not change from now so store result to avoid new requests
-                    $matchUrl = $match->filter('.matchScore a')->attr('href');
-                    $year = $this->getYearForMatchUrl($matchUrl);
-                    while ($date->format('Y') > $year) {
-                        $date->sub(new DateInterval('P1Y'));
-                    }
-                }
+            if ($allDay) {
+                $timeStart = $date->format('Ymd\THis\Z');
+                $date->add(new DateInterval('P1D'));
+                $timeEnd = $date->format('Ymd\THis\Z');
+            } else {
+                $date->setTimeZone(new DateTimeZone('GMT'));
+                $timeStart = $date->format('Ymd\THis\Z');
+                $date->add(new DateInterval('PT105M'));
+                $timeEnd = $date->format('Ymd\THis\Z');
+            }
 
-                if ($allDay) {
-                    $timeStart = $date->format('Ymd\THis\Z');
-                    $date->add(new DateInterval('P1D'));
-                    $timeEnd = $date->format('Ymd\THis\Z');
-                } else {
-                    $date->setTimeZone(new DateTimeZone('GMT'));
-                    $timeStart = $date->format('Ymd\THis\Z');
-                    $date->add(new DateInterval('PT105M'));
-                    $timeEnd = $date->format('Ymd\THis\Z');
-                }
+            $event = [
+                'id' => uniqid(),
+                'home' => $teamHome,
+                'away' => $teamAway,
+                'timeStart' => $timeStart,
+                'timeEnd' => $timeEnd,
+                'allDay' => $allDay,
+                'score' => $score,
+                'description' => $link
+            ];
 
-                $event = [
-                    'id' => uniqid(),
-                    'home' => $this->cleanTeamName($match->filter('.homeClub a')->html()),
-                    'away' => $this->cleanTeamName($match->filter('.awayClub a')->html()),
-                    'timeStart' => $timeStart,
-                    'timeEnd' => $timeEnd,
-                    'allDay' => $allDay,
-                    'score' => $score,
-                    'description' => $link,
-                    'address' => '',
-                ];
-
-                $events[] = $event;
-            });
+            $events[] = $event;
         });
 
         return [
@@ -177,48 +190,5 @@ class SoccerCalendarController extends Controller
         $teamName = trim($teamName);
 
         return $teamName;
-    }
-
-    /**
-     * Retrieves the year from the given match URL.
-     *
-     * @param $url
-     *
-     * @return mixed
-     */
-    protected function getYearForMatchUrl($url)
-    {
-        /** @var AbstractAdapter $cache */
-        $cache = $this->get('cache.app');
-
-        $matchId = $this->getMatchIdFromUrl($url);
-        $yearCache = $cache->getItem($matchId);
-
-        if ($yearCache->isHit()) {
-            return $yearCache->get();
-        }
-
-        $html = @file_get_contents($url.'&loadMatch=true');
-        preg_match_all('#date_utc="([0-9]{4})#i', $html, $matches);
-        $year = $matches[1][0];
-
-        $yearCache->set($matchId, $year);
-        $cache->save($yearCache);
-
-        return $year;
-    }
-
-    /**
-     * Retrieves the match ID from the given URL.
-     *
-     * @param $url
-     *
-     * @return mixed
-     */
-    protected function getMatchIdFromUrl($url)
-    {
-        $matchId = preg_replace('#^[^0-9]+#i', '', $url);
-
-        return $matchId;
     }
 }

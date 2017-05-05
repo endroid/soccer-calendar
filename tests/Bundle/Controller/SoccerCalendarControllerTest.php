@@ -17,7 +17,7 @@ class SoccerCalendarControllerTest extends WebTestCase
     public function testGenerateAction()
     {
         $client = static::createClient();
-        $client->request('GET', $client->getContainer()->get('router')->generate('endroid_guide_index'));
+        $client->request('GET', $client->getContainer()->get('router')->generate('endroid_soccer_calendar_index'));
 
         $response = $client->getResponse();
 
