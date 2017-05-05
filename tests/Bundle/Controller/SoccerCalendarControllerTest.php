@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SoccerCalendarControllerTest extends WebTestCase
 {
-    public function testGenerateAction()
+    public function testIndexAction()
     {
         $client = static::createClient();
         $client->request('GET', $client->getContainer()->get('router')->generate('endroid_soccer_calendar_index'));
@@ -22,5 +22,16 @@ class SoccerCalendarControllerTest extends WebTestCase
         $response = $client->getResponse();
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+    }
+
+    public function testTeamAction()
+    {
+        $client = static::createClient();
+        $client->request('GET', $client->getContainer()->get('router')->generate('endroid_soccer_calendar_team', ['name' => 'ajax']));
+
+        $response = $client->getResponse();
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertTrue(strpos($response->getContent(), 'BEGIN:VCALENDAR') === 0);
     }
 }
