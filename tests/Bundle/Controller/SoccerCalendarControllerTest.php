@@ -20,6 +20,7 @@ class SoccerCalendarControllerTest extends WebTestCase
         $client->request('GET', $client->getContainer()->get('router')->generate('endroid_soccer_calendar_index'));
 
         $response = $client->getResponse();
+        echo $response->getContent();
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
