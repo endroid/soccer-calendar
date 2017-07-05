@@ -30,7 +30,7 @@ public function registerBundles()
 {
     $bundles = [
         // ...
-        new Endroid\SoccerCalendar\Bundle\EndroidSoccerCalendarBundle(),
+        new Endroid\SoccerCalendar\Bundle\SoccerCalendarBundle\EndroidSoccerCalendarBundle(),
     ];
 }
 ```
