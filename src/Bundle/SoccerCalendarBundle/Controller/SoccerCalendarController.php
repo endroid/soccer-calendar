@@ -7,7 +7,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Endroid\SoccerCalendar\Bundle\Controller;
+namespace Endroid\SoccerCalendar\Bundle\SoccerCalendarBundle\Controller;
 
 use DateInterval;
 use DateTime;
@@ -126,13 +126,18 @@ class SoccerCalendarController extends Controller
         $client->getCookieJar()->set(new Cookie('BCPermissionLevel', 'PERSONAL'));
 
         $crawler = $client->request('GET', $url);
-        $crawler->filter('.c-match-overview')->each(function (Crawler $match) use (&$events, $keys, $values) {
+        $crawler->filter('.c-match-overview')->each(function (Crawler $match) use (&$events, $keys, $values, $url) {
             $teamHome = trim($match->filter('.c-fixture__team-name--home')->text());
             $teamAway = trim($match->filter('.c-fixture__team-name--away')->text());
             $scoreHome = intval($match->filter('.c-fixture__score--home')->text());
             $scoreAway = intval($match->filter('.c-fixture__score--away')->text());
             $time = trim($match->filter('.c-fixture__status')->text());
-            $link = $match->filter('.c-match-overview__link')->attr('href');
+
+            $link = $url;
+            $match->filter('.c-match-overview__link')->each(function (Crawler $node) use (&$link) {
+                $link = $node->attr('href');
+            });
+
             $date = str_replace($keys, $this->days + $this->months, $match->filter('h3')->html());
 
             $score = '';
@@ -143,7 +148,14 @@ class SoccerCalendarController extends Controller
                 $score = $scoreHome.' - '.$scoreAway;
             }
 
-            $date = DateTime::createFromFormat('D j M H:i', $date.' '.$time);
+            // Use date from URL when present (so we don't have to guess the year)
+            $dateFromLink = preg_replace('#.*/([0-9]{4}/[0-9]{2}/[0-9]{2})/.*#', '$1', $link);
+
+            if ($dateFromLink != $link) {
+                $date = DateTime::createFromFormat('Y/m/d H:i', $dateFromLink.' '.$time);
+            } else {
+                $date = DateTime::createFromFormat('D j M H:i', $date.' '.$time);
+            }
 
             if ($allDay) {
                 $timeStart = $date->format('Ymd\THis\Z');

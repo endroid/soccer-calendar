@@ -7,7 +7,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Endroid\SoccerCalendar\Bundle;
+namespace Endroid\SoccerCalendar\Bundle\SoccerCalendarBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
