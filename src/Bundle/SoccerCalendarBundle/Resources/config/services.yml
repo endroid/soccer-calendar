@@ -1,0 +1,3 @@
+services:
+    endroid_soccer_calendar.factory.calendar_factory:
+        class: Endroid\SoccerCalendar\Factory\CalendarFactory

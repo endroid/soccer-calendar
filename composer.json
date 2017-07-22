@@ -15,6 +15,7 @@
     "require": {
         "php": ">=5.6",
         "ext-gd": "*",
+        "endroid/calendar": "^1.0",
         "symfony/cache": "^2.7|^3.0",
         "fabpot/goutte": "^3.2"
     },
