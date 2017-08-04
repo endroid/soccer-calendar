@@ -95,9 +95,9 @@ class CalendarFactory
             $dateFromLink = preg_replace('#.*/([0-9]{4}/[0-9]{2}/[0-9]{2})/.*#', '$1', $link);
 
             if ($dateFromLink != $link) {
-                $dateStart = DateTime::createFromFormat('Y/m/d H:i', $dateFromLink.' '.$time);
+                $dateStart = DateTime::createFromFormat('Y/m/d H:i', $dateFromLink.' '.$time, new DateTimeZone('Europe/Amsterdam'));
             } else {
-                $dateStart = DateTime::createFromFormat('D j M H:i', $date.' '.$time);
+                $dateStart = DateTime::createFromFormat('D j M H:i', $date.' '.$time, new DateTimeZOne('Europe/Amsterdam'));
             }
 
             if ($allDay) {
