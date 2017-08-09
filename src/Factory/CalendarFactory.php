@@ -95,19 +95,13 @@ class CalendarFactory
             $dateFromLink = preg_replace('#.*/([0-9]{4}/[0-9]{2}/[0-9]{2})/.*#', '$1', $link);
 
             if ($dateFromLink != $link) {
-                $dateStart = DateTime::createFromFormat('Y/m/d H:i', $dateFromLink.' '.$time, new DateTimeZone('Europe/Amsterdam'));
+                $dateStart = DateTime::createFromFormat('Y/m/d H:i', $dateFromLink.' '.$time, new DateTimeZone($time == '00:00' ? 'UTC' : 'Europe/Amsterdam'));
             } else {
                 $dateStart = DateTime::createFromFormat('D j M H:i', $date.' '.$time, new DateTimeZOne('Europe/Amsterdam'));
             }
 
-            if ($allDay) {
-                $dateEnd = clone $dateStart;
-                $dateEnd->add(new DateInterval('P1D'));
-            } else {
-                $dateStart->setTimeZone(new DateTimeZone('GMT'));
-                $dateEnd = clone $dateStart;
-                $dateEnd->add(new DateInterval('PT105M'));
-            }
+            $dateEnd = clone $dateStart;
+            $dateEnd->add(new DateInterval($allDay ? 'P1D' : 'PT105M'));
 
             $calendarItem = new CalendarItem();
             $calendarItem->setTitle($title);
