@@ -91,14 +91,7 @@ class CalendarFactory
                 $title .= ' ('.$scoreHome.' - '.$scoreAway.')';
             }
 
-            // Use date from URL when present (so we don't have to guess the year)
-            $dateFromLink = preg_replace('#.*/([0-9]{4}/[0-9]{2}/[0-9]{2})/.*#', '$1', $link);
-
-            if ($dateFromLink != $link) {
-                $dateStart = DateTime::createFromFormat('Y/m/d H:i', $dateFromLink.' '.$time, new DateTimeZone($time == '00:00' ? 'UTC' : 'Europe/Amsterdam'));
-            } else {
-                $dateStart = DateTime::createFromFormat('D j M H:i', $date.' '.$time, new DateTimeZOne('Europe/Amsterdam'));
-            }
+            $dateStart = DateTime::createFromFormat('D j M H:i', $date.' '.$time, new DateTimeZOne('Europe/Amsterdam'));
 
             $dateEnd = clone $dateStart;
             $dateEnd->add(new DateInterval($allDay ? 'P1D' : 'PT105M'));

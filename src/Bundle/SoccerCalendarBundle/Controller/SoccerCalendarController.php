@@ -77,7 +77,6 @@ class SoccerCalendarController extends Controller
 
     /**
      * @Route("/{name}.ics", requirements={"name" = ".+"}, name="endroid_soccer_calendar_team")
-     * @Template()
      */
     public function teamAction($name)
     {
