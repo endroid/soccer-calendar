@@ -52,6 +52,7 @@ class SoccerCalendarController extends Controller
 
     /**
      * @param $competitionUrl
+     *
      * @return array
      */
     protected function getTeams($competitionUrl)

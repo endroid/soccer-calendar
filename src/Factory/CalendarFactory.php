@@ -30,7 +30,7 @@ class CalendarFactory
         'Di' => 'Tue',
         'Wo' => 'Wed',
         'Do' => 'Thu',
-        'Vr' => 'Fri'
+        'Vr' => 'Fri',
     ];
 
     /**
@@ -48,11 +48,12 @@ class CalendarFactory
         'sep' => 'sep',
         'okt' => 'oct',
         'nov' => 'nov',
-        'dec' => 'dec'
+        'dec' => 'dec',
     ];
 
     /**
      * @param string $teamName
+     *
      * @return Calendar
      */
     public function create($teamName)
