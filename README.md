@@ -9,7 +9,8 @@ Soccer Calendar
 [![Monthly Downloads](http://img.shields.io/packagist/dm/endroid/soccer-calendar.svg)](https://packagist.org/packages/endroid/soccer-calendar)
 [![License](http://img.shields.io/packagist/l/endroid/soccer-calendar.svg)](https://packagist.org/packages/endroid/soccer-calendar)
 
-This library generates soccer calendars.
+This library load soccer match data using the endroid/soccer-data library and
+generates a calendar using the endroid/calendar library.
 
 ## Installation
 
@@ -17,31 +18,6 @@ Use [Composer](https://getcomposer.org/) to install the library.
 
 ``` bash
 $ composer require endroid/soccer-calendar
-```
-
-## Symfony integration
-
-Register the Symfony bundle in the kernel.
-
-```php
-// app/AppKernel.php
-
-public function registerBundles()
-{
-    $bundles = [
-        // ...
-        new Endroid\SoccerCalendar\Bundle\SoccerCalendarBundle\EndroidSoccerCalendarBundle(),
-    ];
-}
-```
-
-Add the following section to your routing.
-
-``` yml
-EndroidSoccerCalendarBundle:
-    resource: "@EndroidSoccerCalendarBundle/Controller/"
-    type:     annotation
-    prefix:   /soccer-calendar
 ```
 
 ## Versioning

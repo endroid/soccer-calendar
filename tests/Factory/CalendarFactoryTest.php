@@ -7,11 +7,11 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Endroid\SoccerCalendar\Tests\Bundle;
+namespace Endroid\SoccerCalendar\Tests\Factory;
 
 use PHPUnit\Framework\TestCase;
 
-class EndroidSoccerCalendarBundleTest extends TestCase
+class CalendarFactoryTest extends TestCase
 {
     public function testNoTestsYet()
     {
