@@ -15,7 +15,7 @@
     "require": {
         "php": ">=7.1",
         "endroid/soccer-data": "^1.0",
-        "endroid/calendar": "^1.0"
+        "endroid/calendar": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7|^6.0"
