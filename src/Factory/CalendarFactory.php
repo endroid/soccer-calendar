@@ -11,14 +11,10 @@ namespace Endroid\SoccerCalendar\Factory;
 
 use DateInterval;
 use DateTime;
-use DateTimeZone;
 use Endroid\Calendar\Entity\Calendar;
 use Endroid\Calendar\Entity\CalendarItem;
 use Endroid\SoccerData\Entity\Match;
 use Endroid\SoccerData\Entity\Team;
-use Goutte\Client;
-use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\DomCrawler\Crawler;
 
 final class CalendarFactory
 {
@@ -42,7 +38,7 @@ final class CalendarFactory
     {
         $title = $match->getTeamHome()->getName().' - '.$match->getTeamAway()->getName();
 
-        if ($match->getScoreHome() !== null && $match->getScoreAway() !== null) {
+        if (null !== $match->getScoreHome() && null !== $match->getScoreAway()) {
             $title .= ' ('.$match->getScoreHome().' - '.$match->getScoreAway().')';
         }
 
@@ -53,7 +49,7 @@ final class CalendarFactory
     {
         $dateEnd = clone $match->getDate();
 
-        if ($dateEnd->format('H:i') === '00:00') {
+        if ('00:00' === $dateEnd->format('H:i')) {
             $dateEnd->add(new DateInterval('P1D'));
         } else {
             $dateEnd->add(new DateInterval('PT105M'));
