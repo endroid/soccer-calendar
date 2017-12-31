@@ -2,7 +2,7 @@
     "name": "endroid/soccer-calendar",
     "description": "Endroid Soccer Calendar",
     "keywords": ["endroid", "soccer", "calendar"],
-    "homepage": "https://github.com/endroid/SoccerCalendar",
+    "homepage": "https://github.com/endroid/soccer-calendar",
     "type": "library",
     "license": "MIT",
     "authors": [
