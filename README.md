@@ -1,5 +1,4 @@
-Soccer Calendar
-===============
+# Soccer Calendar
 
 *By [endroid](https://endroid.nl/)*
 
