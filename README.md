@@ -3,7 +3,7 @@
 *By [endroid](https://endroid.nl/)*
 
 [![Latest Stable Version](http://img.shields.io/packagist/v/endroid/soccer-calendar.svg)](https://packagist.org/packages/endroid/soccer-calendar)
-[![Build Status](http://img.shields.io/travis/endroid/SoccerCalendar.svg)](http://travis-ci.org/endroid/SoccerCalendar)
+[![Build Status](http://img.shields.io/travis/endroid/soccer-calendar.svg)](http://travis-ci.org/endroid/soccer-calendar)
 [![Total Downloads](http://img.shields.io/packagist/dt/endroid/soccer-calendar.svg)](https://packagist.org/packages/endroid/soccer-calendar)
 [![Monthly Downloads](http://img.shields.io/packagist/dm/endroid/soccer-calendar.svg)](https://packagist.org/packages/endroid/soccer-calendar)
 [![License](http://img.shields.io/packagist/l/endroid/soccer-calendar.svg)](https://packagist.org/packages/endroid/soccer-calendar)
