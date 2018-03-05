@@ -9,12 +9,20 @@
 
 namespace Endroid\SoccerCalendar\Tests\Factory;
 
+use Endroid\SoccerCalendar\Factory\CalendarFactory;
+use Endroid\SoccerData\Entity\Team;
 use PHPUnit\Framework\TestCase;
 
 class CalendarFactoryTest extends TestCase
 {
-    public function testNoTestsYet()
+    public function testCreate()
     {
-        $this->assertTrue(true);
+        $team = new Team(null, 'Ajax');
+
+        $calendarFactory = new CalendarFactory();
+        $calendar = $calendarFactory->createTeamCalendar($team);
+
+        var_dump($calendar);
+        die;
     }
 }
