@@ -14,7 +14,7 @@
     "require": {
         "php": ">=7.1",
         "endroid/calendar": "^2.0",
-        "endroid/installer": "^1.0",
+        "endroid/installer": "^1.0.3",
         "endroid/soccer-data": "^1.0"
     },
     "require-dev": {
