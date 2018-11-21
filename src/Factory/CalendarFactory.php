@@ -27,7 +27,7 @@ final class CalendarFactory
             $calendarItem->setTitle($this->getTitle($match));
             $calendarItem->setDateStart(clone $match->getDate());
             $calendarItem->setDateEnd($this->getDateEnd($match));
-            $calendarItem->setDescription($match->getId());
+//            $calendarItem->setDescription($match->getId());
             $calendar->addCalendarItem($calendarItem);
         }
 
