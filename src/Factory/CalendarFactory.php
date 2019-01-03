@@ -38,13 +38,7 @@ final class CalendarFactory
 
     private function getTitle(Match $match): string
     {
-        $title = $match->getTeamHome()->getName().' - '.$match->getTeamAway()->getName();
-
-        if (null !== $match->getScoreHome() && null !== $match->getScoreAway()) {
-            $title .= ' ('.$match->getScoreHome().' - '.$match->getScoreAway().')';
-        }
-
-        return $title;
+        return $match->getTeamHome()->getName().' - '.$match->getTeamAway()->getName();
     }
 
     private function getDateEnd(Match $match): DateTime
