@@ -13,9 +13,9 @@
     ],
     "require": {
         "php": ">=7.2",
-        "endroid/calendar": "^2.0",
+        "endroid/calendar": "^2.0.7",
         "endroid/installer": "^1.0.3",
-        "endroid/soccer-data": "^1.0"
+        "endroid/soccer-data": "^1.1.1"
     },
     "require-dev": {
         "endroid/test": "dev-master"

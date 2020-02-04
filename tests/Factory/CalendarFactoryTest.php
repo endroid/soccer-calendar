@@ -11,20 +11,48 @@ declare(strict_types=1);
 
 namespace Endroid\SoccerCalendar\Tests\Factory;
 
+use Endroid\Calendar\Entity\Calendar;
+use Endroid\Calendar\Writer\IcalWriter;
 use Endroid\SoccerCalendar\Factory\CalendarFactory;
+use Endroid\SoccerData\Entity\Competition;
 use Endroid\SoccerData\Entity\Team;
+use Endroid\SoccerData\Vi\Client;
+use Endroid\SoccerData\Vi\Loader\CompetitionLoader;
+use Endroid\SoccerData\Vi\Loader\MatchLoader;
+use Endroid\SoccerData\Vi\Loader\TeamLoader;
 use PHPUnit\Framework\TestCase;
 
 class CalendarFactoryTest extends TestCase
 {
-    public function testCreate()
+    /** @testdox Load competition, teams and create calendar */
+    public function testLoadAndCreate()
     {
-        $team = new Team(null, 'Ajax');
+        $client = new Client();
+
+        $competitionLoader = new CompetitionLoader($client);
+        $competition = $competitionLoader->loadByName('Eredivisie');
+
+        $this->assertInstanceOf(Competition::class, $competition);
+
+        $teamLoader = new TeamLoader($client);
+        $teams = $teamLoader->loadByCompetition($competition);
+
+        $this->assertArrayHasKey('Ajax', $teams);
+
+        $ajax = $teams['Ajax'];
+
+        $matchLoader = new MatchLoader($client, $teamLoader);
+        $matchLoader->loadByTeam($ajax);
 
         $calendarFactory = new CalendarFactory();
-        $calendar = $calendarFactory->createTeamCalendar($team);
+        $calendar = $calendarFactory->createTeamCalendar($ajax);
 
-        var_dump($calendar);
-        die;
+        $this->assertInstanceOf(Calendar::class, $calendar);
+
+        $icalWriter = new IcalWriter();
+        $icalData = $icalWriter->writeToString($calendar);
+
+        $this->assertStringContainsString('BEGIN:VCALENDAR', $icalData);
+        $this->assertStringContainsString('END:VCALENDAR', $icalData);
     }
 }
