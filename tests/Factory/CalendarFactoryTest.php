@@ -11,14 +11,13 @@ declare(strict_types=1);
 
 namespace Endroid\SoccerCalendar\Tests\Factory;
 
-use Endroid\Calendar\Entity\Calendar;
+use Endroid\Calendar\Model\Calendar;
 use Endroid\Calendar\Writer\IcalWriter;
 use Endroid\SoccerCalendar\Factory\CalendarFactory;
 use Endroid\SoccerData\Entity\Competition;
-use Endroid\SoccerData\Entity\Team;
 use Endroid\SoccerData\Vi\Client;
 use Endroid\SoccerData\Vi\Loader\CompetitionLoader;
-use Endroid\SoccerData\Vi\Loader\MatchLoader;
+use Endroid\SoccerData\Vi\Loader\GameLoader;
 use Endroid\SoccerData\Vi\Loader\TeamLoader;
 use PHPUnit\Framework\TestCase;
 
@@ -41,7 +40,7 @@ class CalendarFactoryTest extends TestCase
 
         $ajax = $teams['Ajax'];
 
-        $matchLoader = new MatchLoader($client, $teamLoader);
+        $matchLoader = new GameLoader($client, $teamLoader);
         $matchLoader->loadByTeam($ajax);
 
         $calendarFactory = new CalendarFactory();
@@ -50,7 +49,7 @@ class CalendarFactoryTest extends TestCase
         $this->assertInstanceOf(Calendar::class, $calendar);
 
         $icalWriter = new IcalWriter();
-        $icalData = $icalWriter->writeToString($calendar);
+        $icalData = $icalWriter->writeToString($calendar, new \DateTimeImmutable(), new \DateTimeImmutable('+1 year'));
 
         $this->assertStringContainsString('BEGIN:VCALENDAR', $icalData);
         $this->assertStringContainsString('END:VCALENDAR', $icalData);

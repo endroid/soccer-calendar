@@ -11,46 +11,26 @@ declare(strict_types=1);
 
 namespace Endroid\SoccerCalendar\Factory;
 
-use DateInterval;
-use DateTime;
-use Endroid\Calendar\Entity\Calendar;
-use Endroid\Calendar\Entity\CalendarItem;
-use Endroid\SoccerData\Entity\Match;
+use Endroid\Calendar\Model\Calendar;
+use Endroid\Calendar\Model\CalendarItem;
 use Endroid\SoccerData\Entity\Team;
+use Symfony\Component\Uid\Uuid;
 
 final class CalendarFactory
 {
     public function createTeamCalendar(Team $team): Calendar
     {
-        $calendar = new Calendar();
-
-        foreach ($team->getMatches() as $match) {
-            $calendarItem = new CalendarItem();
-            $calendarItem->setTitle($this->getTitle($match));
-            $calendarItem->setDateStart(clone $match->getDate());
-            $calendarItem->setDateEnd($this->getDateEnd($match));
-//            $calendarItem->setDescription($match->getId());
-            $calendar->addCalendarItem($calendarItem);
+        $calendarItems = [];
+        foreach ($team->getGames() as $game) {
+            $calendarItems[] = new CalendarItem(
+                strval(Uuid::v4()),
+                $game->getTitle(),
+                $game->getId(),
+                $game->getDate(),
+                $game->getDateEnd()
+            );
         }
 
-        return $calendar;
-    }
-
-    private function getTitle(Match $match): string
-    {
-        return $match->getTeamHome()->getName().' - '.$match->getTeamAway()->getName();
-    }
-
-    private function getDateEnd(Match $match): DateTime
-    {
-        $dateEnd = clone $match->getDate();
-
-        if ('00:00' === $dateEnd->format('H:i')) {
-            $dateEnd->add(new DateInterval('P1D'));
-        } else {
-            $dateEnd->add(new DateInterval('PT105M'));
-        }
-
-        return $dateEnd;
+        return new Calendar($team->getName(), $calendarItems);
     }
 }
