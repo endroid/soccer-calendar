@@ -14,7 +14,7 @@
     "require": {
         "php": "^7.3||^8.0",
         "endroid/calendar": "^3.0.1",
-        "endroid/soccer-data": "^1.2.3",
+        "endroid/soccer-data": "^1.2.4",
         "symfony/uid": "^5.1"
     },
     "require-dev": {
