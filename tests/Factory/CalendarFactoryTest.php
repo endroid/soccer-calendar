@@ -2,26 +2,19 @@
 
 declare(strict_types=1);
 
-/*
- * (c) Jeroen van den Enden <info@endroid.nl>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
 namespace Endroid\SoccerCalendar\Tests\Factory;
 
 use Endroid\Calendar\Model\Calendar;
 use Endroid\Calendar\Writer\IcalWriter;
 use Endroid\SoccerCalendar\Factory\CalendarFactory;
-use Endroid\SoccerData\Entity\Competition;
+use Endroid\SoccerData\Model\Competition;
 use Endroid\SoccerData\Vi\Client;
 use Endroid\SoccerData\Vi\Loader\CompetitionLoader;
 use Endroid\SoccerData\Vi\Loader\GameLoader;
 use Endroid\SoccerData\Vi\Loader\TeamLoader;
 use PHPUnit\Framework\TestCase;
 
-class CalendarFactoryTest extends TestCase
+final class CalendarFactoryTest extends TestCase
 {
     /** @testdox Load competition, teams and create calendar */
     public function testLoadAndCreate()

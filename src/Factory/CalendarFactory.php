@@ -2,18 +2,11 @@
 
 declare(strict_types=1);
 
-/*
- * (c) Jeroen van den Enden <info@endroid.nl>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
 namespace Endroid\SoccerCalendar\Factory;
 
 use Endroid\Calendar\Model\Calendar;
 use Endroid\Calendar\Model\CalendarItem;
-use Endroid\SoccerData\Entity\Team;
+use Endroid\SoccerData\Model\Team;
 use Symfony\Component\Uid\Uuid;
 
 final class CalendarFactory
@@ -25,12 +18,12 @@ final class CalendarFactory
             $calendarItems[] = new CalendarItem(
                 strval(Uuid::v4()),
                 $game->getTitle(),
-                $game->getId(),
+                $game->id,
                 $game->getDate(),
                 $game->getDateEnd()
             );
         }
 
-        return new Calendar($team->getName(), $calendarItems);
+        return new Calendar($team->name, $calendarItems);
     }
 }
