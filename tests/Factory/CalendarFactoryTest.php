@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 final class CalendarFactoryTest extends TestCase
 {
     /** @testdox Load competition, teams and create calendar */
-    public function testLoadAndCreate()
+    public function testLoadAndCreate(): void
     {
         $client = new Client();
 
