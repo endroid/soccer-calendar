@@ -18,7 +18,7 @@ final class CalendarFactory
             $calendarItems[] = new CalendarItem(
                 strval(Uuid::v4()),
                 $game->getTitle(),
-                $game->id,
+                (string) $game->id,
                 $game->getDate(),
                 $game->getDateEnd()
             );
